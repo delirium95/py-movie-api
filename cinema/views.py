@@ -23,13 +23,19 @@ def movie_list(request):
 @api_view(["GET", "PUT", "DELETE"])
 def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
-    serializer = MovieSerializer(movie, data=request.data)
+
     if request.method == "GET":
+        # Тільки серіалізація існуючого об'єкта
+        serializer = MovieSerializer(movie)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
     elif request.method == "PUT":
+        # Серіалізація з існуючим об'єктом ТА новими даними
+        serializer = MovieSerializer(movie, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
-    else:
+
+    elif request.method == "DELETE":
         movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
