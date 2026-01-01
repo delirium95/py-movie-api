@@ -25,12 +25,10 @@ def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
 
     if request.method == "GET":
-        # Тільки серіалізація існуючого об'єкта
         serializer = MovieSerializer(movie)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == "PUT":
-        # Серіалізація з існуючим об'єктом ТА новими даними
         serializer = MovieSerializer(movie, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
